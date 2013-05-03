@@ -196,8 +196,7 @@
 									</runIf>
 									<targetPath>${project.basedir}/jars/bin</targetPath>
 									<destFileName>minecraft.jar</destFileName>
-									<!--<file>http://assets.minecraft.net/${minecraft_Version}/minecraft.jar</file>-->
-									<file>http://s3.amazonaws.com/MinecraftDownload/minecraft.jar</file>
+									<file>https://s3.amazonaws.com/Minecraft.Download/versions/${minecraftVersion}/${minecraftVersion}.jar</file>
 								</resource>
 								<!-- Download remaining dependencies -->
 								<resource>
