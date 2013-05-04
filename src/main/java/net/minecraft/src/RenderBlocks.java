@@ -1907,7 +1907,7 @@ public class RenderBlocks {
 					return false;
 				}
 
-				var5 = CTMUtils.getTessellator(var18);
+				var5 = TessellatorUtils.getTessellator(var5, var18);
 				double var52 = (double)var18.getMinU();
 				double var54 = (double)var18.getInterpolatedV(var8 ? 2.0D : 0.0D);
 				double var56 = (double)var18.getMaxU();
@@ -2209,7 +2209,7 @@ public class RenderBlocks {
 						return false;
 					}
 
-					var5 = CTMUtils.getTessellator(var8);
+					var5 = TessellatorUtils.getTessellator(var5, var8);
 					var9 = (double)var8.getMinU();
 					var11 = (double)var8.getMinV();
 					var13 = (double)var8.getMaxU();

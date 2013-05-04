@@ -4,7 +4,7 @@ import java.util.List;
 
 public class EntityBoat extends Entity {
 	private boolean field_70279_a;
-	private double speedMultiplier
+	private double speedMultiplier;
 	private int boatPosRotationIncrements;
 	private double boatX;
 	private double boatY;

@@ -523,8 +523,8 @@ public class Block {
 	/**
 	 * Returns the block texture based on the side being looked at.  Args: side
 	 */
-	public final Icon getIcon(int par1) {
-		return this.getBlockTextureFromSideAndMetadata(par1, 0);
+	public final Icon getBlockTextureFromSide(int par1) {
+		return this.getIcon(par1, 0);
 	}
 
 	/**
