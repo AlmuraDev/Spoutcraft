@@ -18,6 +18,9 @@ import net.minecraft.src.IBlockAccess;
 import net.minecraft.src.Icon;
 import net.minecraft.src.RenderBlocks;
 import net.minecraft.src.Tessellator;
+//Spout Start
+import org.spoutcraft.client.config.Configuration;
+//Spout End
 
 public class CTMUtils {
 	private static final boolean enableStandard = Configuration.isConnectedTextures();

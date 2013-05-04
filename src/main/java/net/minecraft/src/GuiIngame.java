@@ -40,7 +40,7 @@ public class GuiIngame extends Gui {
 
 	/** Previous frame vignette brightness (slowly changes by 1% each frame) */
 	public float prevVignetteBrightness = 1.0F;
-	
+
 	/** Remaining ticks the item highlight should be visible */
 	private int remainingHighlightTicks;
 
@@ -264,7 +264,7 @@ public class GuiIngame extends Gui {
 		GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 		GL11.glDisable(GL11.GL_ALPHA_TEST);
 		GL11.glPushMatrix();
-		
+
 		int var12;
 		int var13;
 		int var38;
@@ -319,79 +319,65 @@ public class GuiIngame extends Gui {
 
 			this.mc.mcProfiler.endSection();
 		}
-		
+
 		GL11.glTranslatef(0.0F, (float)(screenHeight - 48), 0.0F);
 		this.mc.mcProfiler.startSection("chat");
 		this.persistantChatGUI.drawChat(this.updateCounter);
 		this.mc.mcProfiler.endSection();
 		GL11.glPopMatrix();
 
-		if (this.mc.gameSettings.keyBindPlayerList.pressed && (!this.mc.isIntegratedServerRunning() || this.mc.thePlayer.sendQueue.playerInfoList.size() > 1 || var42 != null)) {
+		if (this.mc.gameSettings.keyBindPlayerList.pressed && (!this.mc.isIntegratedServerRunning() || this.mc.thePlayer.sendQueue.playerInfoList.size() > 1)) {
 			this.mc.mcProfiler.startSection("playerList");
-			NetClientHandler var39 = this.mc.thePlayer.sendQueue;
-			List var41 = var39.playerInfoList;
-			var38 = var39.currentServerMaxPlayers;
-			var37 = var38;
+			NetClientHandler var37 = this.mc.thePlayer.sendQueue;
+			List var39 = var37.playerInfoList;
+			var13 = var37.currentServerMaxPlayers;
+			int var40 = var13;
 
-			for (var16 = 1; var37 > 20; var37 = (var38 + var16 - 1) / var16) {
-				++var16;
+			for (var38 = 1; var40 > 20; var40 = (var13 + var38 - 1) / var38) {
+				++var38;
 			}
 
-			var17 = 300 / var16;
+			int var16 = 300 / var38;
 
-			if (var17 > 150) {
-				var17 = 150;
+			if (var16 > 150) {
+				var16 = 150;
 			}
 
-			var18 = (var6 - var16 * var17) / 2;
-			byte var45 = 10;
-			drawRect(var18 - 1, var45 - 1, var18 + var17 * var16, var45 + 9 * var37, Integer.MIN_VALUE);
+			var17 = (screenWidth - var38 * var16) / 2;
+			byte var44 = 10;
+			drawRect(var17 - 1, var44 - 1, var17 + var16 * var38, var44 + 9 * var40, Integer.MIN_VALUE);
 
-			for (var20 = 0; var20 < var38; ++var20) {
-				var47 = var18 + var20 % var16 * var17;
-				var22 = var45 + var20 / var16 * 9;
-				drawRect(var47, var22, var47 + var17 - 1, var22 + 8, 553648127);
+			for (int var19 = 0; var19 < var13; ++var19) {
+				int var20 = var17 + var19 % var38 * var16;
+				int var47 = var44 + var19 / var38 * 9;
+				drawRect(var20, var47, var20 + var16 - 1, var47 + 8, 553648127);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				GL11.glEnable(GL11.GL_ALPHA_TEST);
 
-				if (var20 < var41.size()) {
-					GuiPlayerInfo var49 = (GuiPlayerInfo)var41.get(var20);
-					ScorePlayerTeam var48 = this.mc.theWorld.getScoreboard().getPlayersTeam(var49.name);
-					String var53 = ScorePlayerTeam.func_96667_a(var48, var49.name);
-					var8.drawStringWithShadow(var53, var47, var22, 16777215);
+				if (var19 < var39.size()) {
+					GuiPlayerInfo var46 = (GuiPlayerInfo)var39.get(var19);
+					font.drawStringWithShadow(var46.name, var20, var47, 16777215);
+					this.mc.renderEngine.bindTexture(this.mc.renderEngine.getTexture("/gui/icons.png"));
+					byte var50 = 0;
+					boolean var48 = false;
+					byte var49;
 
-					if (var42 != null) {
-						var26 = var47 + var8.getStringWidth(var53) + 5;
-						var50 = var47 + var17 - 12 - 5;
-
-						if (var50 - var26 > 5) {
-							Score var56 = var42.getScoreboard().func_96529_a(var49.name, var42);
-							String var57 = EnumChatFormatting.YELLOW + "" + var56.func_96652_c();
-							var8.drawStringWithShadow(var57, var50 - var8.getStringWidth(var57), var22, 16777215);
-						}
-					}
-
-					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-					this.mc.renderEngine.bindTexture("/gui/icons.png");
-					byte var55 = 0;
-					boolean var54 = false;
-
-					if (var49.responseTime < 0) {
-						var27 = 5;
-					} else if (var49.responseTime < 150) {
-						var27 = 0;
-					} else if (var49.responseTime < 300) {
-						var27 = 1;
-					} else if (var49.responseTime < 600) {
-						var27 = 2;
-					} else if (var49.responseTime < 1000) {
-						var27 = 3;
+					if (var46.responseTime < 0) {
+						var49 = 5;
+					} else if (var46.responseTime < 150) {
+						var49 = 0;
+					} else if (var46.responseTime < 300) {
+						var49 = 1;
+					} else if (var46.responseTime < 600) {
+						var49 = 2;
+					} else if (var46.responseTime < 1000) {
+						var49 = 3;
 					} else {
-						var27 = 4;
+						var49 = 4;
 					}
 
 					this.zLevel += 100.0F;
-					this.drawTexturedModalRect(var47 + var17 - 12, var22, 0 + var55 * 10, 176 + var27 * 8, 10, 8);
+					this.drawTexturedModalRect(var20 + var16 - 12, var47, 0 + var50 * 10, 176 + var49 * 8, 10, 8);
 					this.zLevel -= 100.0F;
 				}
 			}
@@ -401,7 +387,7 @@ public class GuiIngame extends Gui {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
-	
+
 	private void func_96136_a(ScoreObjective par1ScoreObjective, int par2, int par3, FontRenderer par4FontRenderer) {
 		Scoreboard var5 = par1ScoreObjective.getScoreboard();
 		Collection var6 = var5.func_96534_i(par1ScoreObjective);

@@ -1981,7 +1981,7 @@ public class RenderBlocks {
 		if (var6 == null) {
 			return false;
 		} else {
-			var5 = TessellatorUtils.getTessellator(var5, var18);
+			var5 = TessellatorUtils.getTessellator(var5, var6);
 			double var11 = (double)var6.getMinU();
 			double var13 = (double)var6.getInterpolatedV(var8 ? 2.0D : 0.0D);
 			double var15 = (double)var6.getMaxU();
@@ -5631,7 +5631,7 @@ public class RenderBlocks {
 		this.setOverrideBlockTexture(this.getBlockIcon(Block.glass));
 		this.setRenderBounds(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 		this.renderStandardBlock(par1BlockBeacon, par2, par3, par4);
-		his.setOverrideBlockTexture(par1BlockBeacon.getBeaconIcon());
+		this.setOverrideBlockTexture(par1BlockBeacon.getBeaconIcon());
 		this.setRenderBounds(0.1875D, (double)var5, 0.1875D, 0.8125D, 0.875D, 0.8125D);
 		this.renderStandardBlock(par1BlockBeacon, par2, par3, par4);
 		this.clearOverrideBlockTexture();

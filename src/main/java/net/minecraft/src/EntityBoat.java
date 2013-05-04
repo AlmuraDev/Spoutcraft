@@ -263,8 +263,8 @@ public class EntityBoat extends Entity {
 			}
 
 			if (this.riddenByEntity != null) {
-				this.motionX += this.riddenByEntity.motionX * this.field_70276_b;
-				this.motionZ += this.riddenByEntity.motionZ * this.field_70276_b;
+				this.motionX += this.riddenByEntity.motionX * this.speedMultiplier;
+				this.motionZ += this.riddenByEntity.motionZ * this.speedMultiplier;
 			}
 
 			var6 = Math.sqrt(this.motionX * this.motionX + this.motionZ * this.motionZ);

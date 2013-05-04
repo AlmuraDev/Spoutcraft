@@ -541,7 +541,7 @@ public abstract class Entity {
 		List var8 = this.worldObj.getCollidingBoundingBoxes(this, var7);
 		return !var8.isEmpty() ? false : !this.worldObj.isAnyLiquid(var7);
 	}
-
+	
 	/**
 	 * Tries to moves the entity by the passed in displacement. Args: x, y, z
 	 */
@@ -633,7 +633,7 @@ public abstract class Entity {
 				par1 = 0.0D;
 			}
 
-			boolean var36 = this.onGround || var15 != par3 && var15 < 0.0D;
+			boolean var34 = this.onGround || var15 != par3 && var15 < 0.0D;
 			int var23;
 
 			for (var23 = 0; var23 < var35.size(); ++var23) {
@@ -660,13 +660,13 @@ public abstract class Entity {
 				par1 = 0.0D;
 			}
 
-			int var30;
 			double var25;
 			double var27;
-			double var37;
+			int var30;
+			double var36;
 
-			if (this.stepHeight > 0.0F && var36 && (var20 || this.ySize < 0.05F) && (var13 != par1 || var17 != par5)) {
-				var37 = par1;
+			if (this.stepHeight > 0.0F && var34 && (var20 || this.ySize < 0.05F) && (var13 != par1 || var17 != par5)) {
+				var36 = par1;
 				var25 = par3;
 				var27 = par5;
 				par1 = var13;
@@ -726,8 +726,8 @@ public abstract class Entity {
 					this.boundingBox.offset(0.0D, par3, 0.0D);
 				}
 
-				if (var37 * var37 + var27 * var27 >= par1 * par1 + par5 * par5) {
-					par1 = var37;
+				if (var36 * var36 + var27 * var27 >= par1 * par1 + par5 * par5) {
+					par1 = var36;
 					par3 = var25;
 					par5 = var27;
 					this.boundingBox.setBB(var29);
@@ -757,21 +757,21 @@ public abstract class Entity {
 				this.motionZ = 0.0D;
 			}
 
-			var37 = this.posX - var7;
+			var36 = this.posX - var7;
 			var25 = this.posY - var9;
 			var27 = this.posZ - var11;
 
 			if (this.canTriggerWalking() && !var20 && this.ridingEntity == null) {
-				int var39 = MathHelper.floor_double(this.posX);
+				int var37 = MathHelper.floor_double(this.posX);
 				var30 = MathHelper.floor_double(this.posY - 0.20000000298023224D - (double)this.yOffset);
 				int var31 = MathHelper.floor_double(this.posZ);
-				int var32 = this.worldObj.getBlockId(var39, var30, var31);
+				int var32 = this.worldObj.getBlockId(var37, var30, var31);
 
 				if (var32 == 0) {
-					int var33 = this.worldObj.blockGetRenderType(var39, var30 - 1, var31);
+					int var33 = this.worldObj.blockGetRenderType(var37, var30 - 1, var31);
 
 					if (var33 == 11 || var33 == 32 || var33 == 21) {
-						var32 = this.worldObj.getBlockId(var39, var30 - 1, var31);
+						var32 = this.worldObj.getBlockId(var37, var30 - 1, var31);
 					}
 				}
 
@@ -779,24 +779,24 @@ public abstract class Entity {
 					var25 = 0.0D;
 				}
 
-				this.distanceWalkedModified = (float)((double)this.distanceWalkedModified + (double)MathHelper.sqrt_double(var37 * var37 + var27 * var27) * 0.6D);
+				this.distanceWalkedModified = (float)((double)this.distanceWalkedModified + (double)MathHelper.sqrt_double(var36 * var36 + var27 * var27) * 0.6D);
 				this.distanceWalkedOnStepModified = (float)((double)this.distanceWalkedOnStepModified + (double)MathHelper.sqrt_double(var36 * var36 + var25 * var25 + var27 * var27) * 0.6D);
 
 				if (this.distanceWalkedOnStepModified > (float)this.nextStepDistance && var32 > 0) {
 					this.nextStepDistance = (int)this.distanceWalkedOnStepModified + 1;
 
 					if (this.isInWater()) {
-						float var34 = MathHelper.sqrt_double(this.motionX * this.motionX * 0.20000000298023224D + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D) * 0.35F;
+						float var39 = MathHelper.sqrt_double(this.motionX * this.motionX * 0.20000000298023224D + this.motionY * this.motionY + this.motionZ * this.motionZ * 0.20000000298023224D) * 0.35F;
 
-						if (var34 > 1.0F) {
-							var34 = 1.0F;
+						if (var39 > 1.0F) {
+							var39 = 1.0F;
 						}
 
-						this.playSound("liquid.swim", var34, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
+						this.playSound("liquid.swim", var39, 1.0F + (this.rand.nextFloat() - this.rand.nextFloat()) * 0.4F);
 					}
 
-					this.playStepSound(var39, var30, var31, var32);
-					Block.blocksList[var32].onEntityWalking(this.worldObj, var39, var30, var31, this);
+					this.playStepSound(var37, var30, var31, var32);
+					Block.blocksList[var32].onEntityWalking(this.worldObj, var37, var30, var31, this);
 				}
 			}
 

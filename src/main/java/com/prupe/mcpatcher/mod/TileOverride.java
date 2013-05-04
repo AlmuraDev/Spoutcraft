@@ -2,6 +2,7 @@ package com.prupe.mcpatcher.mod;
 
 import com.prupe.mcpatcher.MCPatcherUtils;
 import com.prupe.mcpatcher.TexturePackAPI;
+import com.prupe.mcpatcher.TileLoader;
 import com.prupe.mcpatcher.mod.TileOverrideImpl$CTM;
 import com.prupe.mcpatcher.mod.TileOverrideImpl$Fixed;
 import com.prupe.mcpatcher.mod.TileOverrideImpl$Horizontal;
