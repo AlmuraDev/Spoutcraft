@@ -196,7 +196,7 @@
 									</runIf>
 									<targetPath>${project.basedir}/jars/bin</targetPath>
 									<destFileName>minecraft.jar</destFileName>
-									<file>https://s3.amazonaws.com/Minecraft.Download/versions/${minecraftVersion}/${minecraftVersion}.jar</file>
+									<file>http://s3.amazonaws.com/Minecraft.Download/versions/${minecraftVersion}/${minecraftVersion}.jar</file>
 								</resource>
 								<!-- Download remaining dependencies -->
 								<resource>
@@ -269,9 +269,9 @@
 									<targetPath>${project.basedir}/jars/bin</targetPath>
 									<dependencies>
 										<dependency>
-											<groupId>org.lwjgl.lwjgl</groupId>
+											<groupId>net.java.jinput</groupId>
 											<artifactId>jinput</artifactId>
-											<version>1.0.0-b01</version>
+											<version>2.0.5</version>
 											<stripVersion>true</stripVersion>
 										</dependency>
 										<dependency>
