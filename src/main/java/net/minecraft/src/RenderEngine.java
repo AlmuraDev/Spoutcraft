@@ -164,7 +164,7 @@ public class RenderEngine {
 
 					BufferedImage var7 = TexturePackAPI.getImage(par1Str);
 
-					if (var7 == null) {						
+					if (var7 == null) {
 						var7 = this.missingTextureImage;
 					}
 
@@ -173,7 +173,7 @@ public class RenderEngine {
 					return var3;
 				} catch (Exception var8) {
 					var8.printStackTrace();
-					int var4 = GLAllocation.generateTextureNames();					
+					int var4 = GLAllocation.generateTextureNames();
 					this.setupTexture(this.missingTextureImage, var4);
 					this.textureMap.put(par1Str, Integer.valueOf(var4));
 					return var4;
