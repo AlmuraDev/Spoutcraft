@@ -286,6 +286,7 @@ public class TileLoader {
 	}
 
 	static BufferedImage access$800() {
+		System.out.println("SpoutDebug: returning missing Texture");
 		return missingTextureImage;
 	}
 

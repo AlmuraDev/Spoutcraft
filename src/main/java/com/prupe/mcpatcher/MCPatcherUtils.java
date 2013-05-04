@@ -101,7 +101,7 @@ public class MCPatcherUtils {
 			minecraftDir = null;
 		}
 
-		return Config.load(minecraftDir);
+		return true;
 	}
 
 	public static File getMinecraftPath(String ... var0) {
