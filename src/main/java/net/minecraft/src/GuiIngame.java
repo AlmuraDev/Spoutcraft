@@ -40,8 +40,12 @@ public class GuiIngame extends Gui {
 
 	/** Previous frame vignette brightness (slowly changes by 1% each frame) */
 	public float prevVignetteBrightness = 1.0F;
-	private int field_92017_k;
-	private ItemStack field_92016_l;
+	
+	/** Remaining ticks the item highlight should be visible */
+	private int remainingHighlightTicks;
+
+	/** The ItemStack that is currently being highlighted */
+	private ItemStack highlightingItemStack;
 
 	public GuiIngame(Minecraft par1Minecraft) {
 		this.mc = par1Minecraft;
@@ -174,7 +178,7 @@ public class GuiIngame extends Gui {
 			this.mc.mcProfiler.startSection("debug");
 			GL11.glPushMatrix();
 			if (Configuration.getFastDebug() != 2) {
-				font.drawStringWithShadow("Minecraft 1.5 (" + this.mc.debug + ")", 2, 2, 16777215);
+				font.drawStringWithShadow("Minecraft 1.5.2 (" + this.mc.debug + ")", 2, 2, 16777215);
 				font.drawStringWithShadow(this.mc.debugInfoRenders(), 2, 12, 16777215);
 				font.drawStringWithShadow(this.mc.getEntityDebug(), 2, 22, 16777215);
 				font.drawStringWithShadow(this.mc.debugInfoEntities(), 2, 32, 16777215);
@@ -274,14 +278,14 @@ public class GuiIngame extends Gui {
 			var38 = (screenWidth - font.getStringWidth(var34)) / 2;
 			this.mc.mcProfiler.startSection("toolHighlight");
 
-			if (this.field_92017_k > 0 && this.field_92016_l != null) {
-				if (this.field_92016_l.itemID == MaterialData.flint.getRawId()) {
-					custom = Spoutcraft.getMaterialManager().getToolTip(new CraftItemStack(this.field_92016_l));
+			if (this.remainingHighlightTicks > 0 && this.highlightingItemStack != null) {
+				if (this.highlightingItemStack.itemID == MaterialData.flint.getRawId()) {
+					custom = Spoutcraft.getMaterialManager().getToolTip(new CraftItemStack(this.highlightingItemStack));
 				}
 				if (custom != null) {
 					var35 = custom;
 				} else {
-					var35 = this.field_92016_l.getDisplayName();
+					var35 = this.highlightingItemStack.getDisplayName();
 				}
 				var12 = (screenWidth - font.getStringWidth(var35)) / 2;
 				var13 = screenHeight - 59;
@@ -297,7 +301,7 @@ public class GuiIngame extends Gui {
 					var13 += 6;
 				}
 
-				var38 = (int)((float)this.field_92017_k * 256.0F / 10.0F);
+				var38 = (int)((float)this.remainingHighlightTicks * 256.0F / 10.0F);
 
 				if (var38 > 255) {
 					var38 = 255;
@@ -322,58 +326,72 @@ public class GuiIngame extends Gui {
 		this.mc.mcProfiler.endSection();
 		GL11.glPopMatrix();
 
-		if (this.mc.gameSettings.keyBindPlayerList.pressed && (!this.mc.isIntegratedServerRunning() || this.mc.thePlayer.sendQueue.playerInfoList.size() > 1)) {
+		if (this.mc.gameSettings.keyBindPlayerList.pressed && (!this.mc.isIntegratedServerRunning() || this.mc.thePlayer.sendQueue.playerInfoList.size() > 1 || var42 != null)) {
 			this.mc.mcProfiler.startSection("playerList");
-			NetClientHandler var37 = this.mc.thePlayer.sendQueue;
-			List var39 = var37.playerInfoList;
-			var13 = var37.currentServerMaxPlayers;
-			int var40 = var13;
-			
-			for (var38 = 1; var40 > 20; var40 = (var13 + var38 - 1) / var38) {
-				++var38;
+			NetClientHandler var39 = this.mc.thePlayer.sendQueue;
+			List var41 = var39.playerInfoList;
+			var38 = var39.currentServerMaxPlayers;
+			var37 = var38;
+
+			for (var16 = 1; var37 > 20; var37 = (var38 + var16 - 1) / var16) {
+				++var16;
 			}
 
-			int var16 = 300 / var38;
+			var17 = 300 / var16;
 
-			if (var16 > 150) {
-				var16 = 150;
+			if (var17 > 150) {
+				var17 = 150;
 			}
 
-			var17 = (screenWidth - var38 * var16) / 2;
-			byte var44 = 10;
-			drawRect(var17 - 1, var44 - 1, var17 + var16 * var38, var44 + 9 * var40, Integer.MIN_VALUE);
+			var18 = (var6 - var16 * var17) / 2;
+			byte var45 = 10;
+			drawRect(var18 - 1, var45 - 1, var18 + var17 * var16, var45 + 9 * var37, Integer.MIN_VALUE);
 
-			for (int var19 = 0; var19 < var13; ++var19) {
-				int var20 = var17 + var19 % var38 * var16;
-				int var47 = var44 + var19 / var38 * 9;
-				drawRect(var20, var47, var20 + var16 - 1, var47 + 8, 553648127);
+			for (var20 = 0; var20 < var38; ++var20) {
+				var47 = var18 + var20 % var16 * var17;
+				var22 = var45 + var20 / var16 * 9;
+				drawRect(var47, var22, var47 + var17 - 1, var22 + 8, 553648127);
 				GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 				GL11.glEnable(GL11.GL_ALPHA_TEST);
 
-				if (var19 < var39.size()) {
-					GuiPlayerInfo var46 = (GuiPlayerInfo)var39.get(var19);
-					font.drawStringWithShadow(var46.name, var20, var47, 16777215);
-					this.mc.renderEngine.bindTexture(this.mc.renderEngine.getTexture("/gui/icons.png"));
-					byte var50 = 0;
-					boolean var48 = false;
-					byte var49;
+				if (var20 < var41.size()) {
+					GuiPlayerInfo var49 = (GuiPlayerInfo)var41.get(var20);
+					ScorePlayerTeam var48 = this.mc.theWorld.getScoreboard().getPlayersTeam(var49.name);
+					String var53 = ScorePlayerTeam.func_96667_a(var48, var49.name);
+					var8.drawStringWithShadow(var53, var47, var22, 16777215);
 
-					if (var46.responseTime < 0) {
-						var49 = 5;
-					} else if (var46.responseTime < 150) {
-						var49 = 0;
-					} else if (var46.responseTime < 300) {
-						var49 = 1;
-					} else if (var46.responseTime < 600) {
-						var49 = 2;
-					} else if (var46.responseTime < 1000) {
-						var49 = 3;
+					if (var42 != null) {
+						var26 = var47 + var8.getStringWidth(var53) + 5;
+						var50 = var47 + var17 - 12 - 5;
+
+						if (var50 - var26 > 5) {
+							Score var56 = var42.getScoreboard().func_96529_a(var49.name, var42);
+							String var57 = EnumChatFormatting.YELLOW + "" + var56.func_96652_c();
+							var8.drawStringWithShadow(var57, var50 - var8.getStringWidth(var57), var22, 16777215);
+						}
+					}
+
+					GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
+					this.mc.renderEngine.bindTexture("/gui/icons.png");
+					byte var55 = 0;
+					boolean var54 = false;
+
+					if (var49.responseTime < 0) {
+						var27 = 5;
+					} else if (var49.responseTime < 150) {
+						var27 = 0;
+					} else if (var49.responseTime < 300) {
+						var27 = 1;
+					} else if (var49.responseTime < 600) {
+						var27 = 2;
+					} else if (var49.responseTime < 1000) {
+						var27 = 3;
 					} else {
-						var49 = 4;
+						var27 = 4;
 					}
 
 					this.zLevel += 100.0F;
-					this.drawTexturedModalRect(var20 + var16 - 12, var47, 0 + var50 * 10, 176 + var49 * 8, 10, 8);
+					this.drawTexturedModalRect(var47 + var17 - 12, var22, 0 + var55 * 10, 176 + var27 * 8, 10, 8);
 					this.zLevel -= 100.0F;
 				}
 			}
@@ -383,18 +401,18 @@ public class GuiIngame extends Gui {
 		GL11.glDisable(GL11.GL_LIGHTING);
 		GL11.glEnable(GL11.GL_ALPHA_TEST);
 	}
-
+	
 	private void func_96136_a(ScoreObjective par1ScoreObjective, int par2, int par3, FontRenderer par4FontRenderer) {
-		Scoreboard var5 = par1ScoreObjective.func_96682_a();
+		Scoreboard var5 = par1ScoreObjective.getScoreboard();
 		Collection var6 = var5.func_96534_i(par1ScoreObjective);
 
 		if (var6.size() <= 15) {
-			int var7 = par4FontRenderer.getStringWidth(par1ScoreObjective.func_96678_d());
+			int var7 = par4FontRenderer.getStringWidth(par1ScoreObjective.getDisplayName());
 			String var11;
 
 			for (Iterator var8 = var6.iterator(); var8.hasNext(); var7 = Math.max(var7, par4FontRenderer.getStringWidth(var11))) {
 				Score var9 = (Score)var8.next();
-				ScorePlayerTeam var10 = var5.func_96509_i(var9.func_96653_e());
+				ScorePlayerTeam var10 = var5.getPlayersTeam(var9.func_96653_e());
 				var11 = ScorePlayerTeam.func_96667_a(var10, var9.func_96653_e()) + ": " + EnumChatFormatting.RED + var9.func_96652_c();
 			}
 
@@ -408,7 +426,7 @@ public class GuiIngame extends Gui {
 			while (var13.hasNext()) {
 				Score var14 = (Score)var13.next();
 				++var12;
-				ScorePlayerTeam var15 = var5.func_96509_i(var14.func_96653_e());
+				ScorePlayerTeam var15 = var5.getPlayersTeam(var14.func_96653_e());
 				String var16 = ScorePlayerTeam.func_96667_a(var15, var14.func_96653_e());
 				String var17 = EnumChatFormatting.RED + "" + var14.func_96652_c();
 				int var19 = var23 - var12 * par4FontRenderer.FONT_HEIGHT;
@@ -418,7 +436,7 @@ public class GuiIngame extends Gui {
 				par4FontRenderer.drawString(var17, var20 - par4FontRenderer.getStringWidth(var17), var19, 553648127);
 
 				if (var12 == var6.size()) {
-					String var21 = par1ScoreObjective.func_96678_d();
+					String var21 = par1ScoreObjective.getDisplayName();
 					drawRect(var24 - 2, var19 - par4FontRenderer.FONT_HEIGHT - 1, var20, var19 - 1, 1610612736);
 					drawRect(var24 - 2, var19 - 1, var20, var19, 1342177280);
 					par4FontRenderer.drawString(var21, var24 + var7 / 2 - par4FontRenderer.getStringWidth(var21) / 2, var19 - par4FontRenderer.FONT_HEIGHT, 553648127);
@@ -582,16 +600,16 @@ public class GuiIngame extends Gui {
 			ItemStack var1 = this.mc.thePlayer.inventory.getCurrentItem();
 
 			if (var1 == null) {
-				this.field_92017_k = 0;
-			} else if (this.field_92016_l != null && var1.itemID == this.field_92016_l.itemID && ItemStack.areItemStackTagsEqual(var1, this.field_92016_l) && (var1.isItemStackDamageable() || var1.getItemDamage() == this.field_92016_l.getItemDamage())) {
-				if (this.field_92017_k > 0) {
-					--this.field_92017_k;
+				this.remainingHighlightTicks = 0;
+			} else if (this.highlightingItemStack != null && var1.itemID == this.highlightingItemStack.itemID && ItemStack.areItemStackTagsEqual(var1, this.highlightingItemStack) && (var1.isItemStackDamageable() || var1.getItemDamage() == this.highlightingItemStack.getItemDamage())) {
+				if (this.remainingHighlightTicks > 0) {
+					--this.remainingHighlightTicks;
 				}
 			} else {
-				this.field_92017_k = 40;
+				this.remainingHighlightTicks = 40;
 			}
 
-			this.field_92016_l = var1;
+			this.highlightingItemStack = var1;
 		}
 	}
 
