@@ -1,26 +1,25 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<!-- Project information -->
 	<name>Spoutcraft</name>
 	<groupId>org.spoutcraft</groupId>
 	<artifactId>spoutcraft</artifactId>
-	<version>1.5.2-SNAPSHOT</version>
-	<url>http://www.spout.org</url>
+	<version>1.6.1-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<url>http://www.spoutcraft.org</url>
 	<inceptionYear>2011</inceptionYear>
-	<description>Spoutcraft is a modified Minecraft client, which is accessible via the Spoutcraft Launcher, that boosts increased FPS, HD textures/fonts,
-	minimap, and an overview map. When connecting to a server with SpoutPlugin, custom blocks and items, custom guis, custom sounds, etc are
-	all available for use. Spoutcraft is a legacy project and will be replaced by the Spout client when finished.</description>
+	<description>Spoutcraft is a Minecraft client mod and launcher that provides users with a more customizable experience.</description>
 
-	<!-- Build properties -->
+	<!-- Project properties -->
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<minecraftVersion>1.5.2</minecraftVersion>
-		<minecraft_Version>1_5_2</minecraft_Version>
+		<buildNumber>0</buildNumber><!-- DO NOT TOUCH! -->
 		<lwjglVersion>2.9.0</lwjglVersion>
-		<mcpVersion>751</mcpVersion>
-		<buildNumber>0</buildNumber>
+		<minecraftVersion>1.6.1</minecraftVersion>
+		<minecraft_Version>1_6_1</minecraft_Version>
+		<mcpVersion>8.02</mcpVersion>
+		<mcp_Version>802</mcp_Version>
 	</properties>
 
 	<!-- Organization information -->
@@ -40,18 +39,18 @@
 
 	<!-- Source code access -->
 	<scm>
-		<developerConnection>scm:git:git@github.com:Legacy/Spoutcraft.git</developerConnection>
 		<connection>scm:git:git://github.com/Legacy/Spoutcraft.git</connection>
+		<developerConnection>scm:git:git@github.com:Legacy/Spoutcraft.git</developerConnection>
 		<url>https://github.com/Legacy/Spoutcraft</url>
 	</scm>
 
-	<!-- Build server -->
+	<!-- Continuous integration -->
 	<ciManagement>
-		<system>jenkins</system>
-		<url>http://build.spout.org/job/Spoutcraft</url>
+		<system>travis</system>
+		<url>https://travis-ci.org/Legacy/Spoutcraft</url>
 	</ciManagement>
 
-	<!-- Issue tracker -->
+	<!-- Issue management -->
 	<issueManagement>
 		<system>jira</system>
 		<url>http://issues.spout.org/browse/LEGACY</url>
@@ -61,7 +60,7 @@
 	<repositories>
 		<repository>
 			<id>spout-repo</id>
-			<url>http://repo.spout.org</url>
+			<url>http://nexus.spout.org/content/groups/public/</url>
 			<snapshots>
 				<enabled>true</enabled>
 				<updatePolicy>always</updatePolicy>
@@ -73,7 +72,7 @@
 	<pluginRepositories>
 		<pluginRepository>
 			<id>spout-repo</id>
-			<url>http://repo.spout.org</url>
+			<url>http://nexus.spout.org/content/groups/public/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
@@ -82,12 +81,12 @@
 		<!-- Publish releases here -->
 		<repository>
 			<id>spout-releases</id>
-			<url>http://nexus.spout.org/content/repositories/releases</url>
+			<url>http://nexus.spout.org/content/repositories/releases/</url>
 		</repository>
 		<!-- Publish snapshots here -->
 		<snapshotRepository>
 			<id>spout-snapshots</id>
-			<url>http://nexus.spout.org/content/repositories/snapshots</url>
+			<url>http://nexus.spout.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -100,8 +99,7 @@
 			<!-- Static resources -->
 			<resource>
 				<filtering>false</filtering>
-				<targetPath>.</targetPath>
-				<directory>${project.basedir}</directory>
+				<directory>.</directory>
 				<includes>
 					<include>LICENSE.txt</include>
 				</includes>
@@ -110,7 +108,7 @@
 
 		<!-- Build plugins -->
 		<plugins>
-			<!-- License headers plugin -->
+			<!-- License header plugin -->
 			<plugin>
 				<groupId>com.mycila.maven-license-plugin</groupId>
 				<artifactId>maven-license-plugin</artifactId>
@@ -127,7 +125,7 @@
 							<quiet>true</quiet>
 							<encoding>UTF-8</encoding>
 							<strictCheck>true</strictCheck>
-							<header>${project.basedir}/HEADER.txt</header>
+							<header>HEADER.txt</header>
 							<mapping>
 								<java>SLASHSTAR_STYLE</java>
 							</mapping>
@@ -171,7 +169,7 @@
 										}}
 									</runIf>
 									<targetPath>${project.basedir}</targetPath>
-									<file>http://mcp.ocean-labs.de/files/mcp${mcpVersion}.zip</file>
+									<file>http://mcp.ocean-labs.de/files/mcp${mcp_Version}.zip</file>
 									<unpack>true</unpack>
 									<useTrueZipForUnpack>false</useTrueZipForUnpack>
 									<preservePath>true</preservePath>
@@ -194,73 +192,74 @@
 											return true;
 										}}
 									</runIf>
-									<targetPath>${project.basedir}/jars/bin</targetPath>
-									<destFileName>minecraft.jar</destFileName>
+									<targetPath>${project.basedir}/jars/versions/${minecraftVersion}</targetPath>
+									<destFileName>${minecraftVersion}.jar</destFileName>
 									<file>http://s3.amazonaws.com/Minecraft.Download/versions/${minecraftVersion}/${minecraftVersion}.jar</file>
 								</resource>
 								<!-- Download remaining dependencies -->
 								<resource>
-									<targetPath>${project.basedir}/lib</targetPath>
+									<targetPath>${project.basedir}/jars/libraries</targetPath>
+									<!--<targetPath>${project.basedir}/jars/libraries/de/cuina/fireandfuel/codecjlayermp3/r2</targetPath>-->
 									<dependencies>
 										<dependency>
 											<groupId>de.cuina.fireandfuel</groupId>
 											<artifactId>codecjlayermp3</artifactId>
 											<version>r2</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>cc.thedudeguy</groupId>
 											<artifactId>codecjorbis</artifactId>
 											<version>r0</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>commons-io</groupId>
 											<artifactId>commons-io</artifactId>
 											<version>2.4</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>org.apache.commons</groupId>
 											<artifactId>commons-lang3</artifactId>
 											<version>3.1</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>dnsjava</groupId>
 											<artifactId>dnsjava</artifactId>
 											<version>2.1.1</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>javax.jmdns</groupId>
 											<artifactId>jmdns</artifactId>
 											<version>3.4.1</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>org.lwjgl.lwjgl</groupId>
 											<artifactId>lwjgl</artifactId>
 											<version>${lwjglVersion}</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>slick</groupId>
 											<artifactId>slick</artifactId>
 											<version>274</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>org.yaml</groupId>
 											<artifactId>snakeyaml</artifactId>
-											<version>1.11</version>
-											<stripVersion>true</stripVersion>
+											<version>1.12</version>
+											<stripVersion>false</stripVersion>
 										</dependency>
 										<dependency>
 											<groupId>net.sf.trove4j</groupId>
 											<artifactId>trove4j</artifactId>
 											<version>3.0.3</version>
-											<stripVersion>true</stripVersion>
+											<stripVersion>false</stripVersion>
 										</dependency>
 									</dependencies>
 								</resource>
@@ -291,7 +290,7 @@
 								<!-- Copy and unpack LWJGL natives to MCP bin folder -->
 								<resource>
 									<runIf>{{ osName.contains("Windows") }}</runIf>
-									<targetPath>${project.basedir}/jars/bin/natives</targetPath>
+									<targetPath>${project.basedir}/jars/versions/${minecraftVersion}/${minecraftVersion}-natives</targetPath>
 									<dependencies>
 										<dependency>
 											<groupId>org.lwjgl.lwjgl</groupId>
@@ -307,7 +306,7 @@
 								</resource>
 								<resource>
 									<runIf>{{ osName.contains("Mac") }}</runIf>
-									<targetPath>${project.basedir}/jars/bin/natives</targetPath>
+									<targetPath>${project.basedir}/jars/versions/${minecraftVersion}/${minecraftVersion}-natives</targetPath>
 									<dependencies>
 										<dependency>
 											<groupId>org.lwjgl.lwjgl</groupId>
@@ -323,7 +322,7 @@
 								</resource>
 								<resource>
 									<runIf>{{ osName.contains("Linux") }}</runIf>
-									<targetPath>${project.basedir}/jars/bin/natives</targetPath>
+									<targetPath>${project.basedir}/jars/versions/${minecraftVersion}/${minecraftVersion}-natives</targetPath>
 									<dependencies>
 										<dependency>
 											<groupId>org.lwjgl.lwjgl</groupId>
@@ -444,7 +443,7 @@
 									<replaces>
 										<replace>
 											<from>Unknown Version</from>
-											<to>${releaseVersion} b${buildNumber}</to>
+											<to>${project.version}-b${buildNumber}</to>
 										</replace>
 									</replaces>
 								</resource>
@@ -527,25 +526,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Release version plugin -->
-			<plugin>
-				<groupId>com.sourcesense.maven</groupId>
-				<artifactId>maven-nosnapshot-plugin</artifactId>
-				<version>0.0.7</version>
-				<executions>
-					<execution>
-						<configuration>
-							<version>${project.version}</version>
-							<propertyName>releaseVersion</propertyName>
-						</configuration>
-						<phase>initialize</phase>
-						<goals>
-							<goal>strip</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!-- Disable compiler plugin -->
+			<!-- Disable source compiler plugin -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
